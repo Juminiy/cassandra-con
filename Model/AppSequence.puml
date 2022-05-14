@@ -1,0 +1,26 @@
+@startuml
+
+
+autonumber
+
+User -> MicroApp : Push Register or Login Button,按下授权的按钮
+MicroApp -> WeixinOpenPlatform : HTTP GET Request for code ,URL is https://open.weixin.qq.com/connect/qrconnect?appid={APPID}&redirect_uri={REDIRECT_URI}&response_type=code&scope={SCOPE}&state={STATE}#wechat_redirect
+MicroApp <-- WeixinOpenPlatform : 临时授权码：code
+MicroApp -> WeixinOpenPlatform : HTTP POST Request for access_token,URL is https://api.weixin.qq.com/sns/oauth2/access_token?appid={APPID}&secret={SECRET}&code={CODE}&grant_type={authorization_code}
+WeixinOpenPlatform --> MicroApp: 返回access_token和有效时间
+MicroApp -> WeixinOpenPlatform : HTTP POST Authentication Request,URL is https://api.weixin.qq.com/sns/userinfo?access_token={access_token} 通过授权码进行登录
+WeixinOpenPlatform --> MicroApp: 登录成功或者回调失败
+MicroApp -> User : 登陆成功 或者 失败
+User -> MicroApp : 登陆成功可发送其他请求
+MicroApp -> WeixinOpenPlatform : MicroApp其他请求
+MicroApp <-- WeixinOpenPlatform : 微信开放平台对于MicroApp的响应
+
+MicroApp -> DataBase : 请求后将用户的必要数据写入数据库
+DataBase --> MicroApp : 数据库回应写入的正确性
+MicroApp -> DataBase : 读数据库
+DataBase --> MicroApp : 数据库回应请求结果
+
+Admin -> MicroApp : 开发和使用MicroApp
+User -> Admin : 上报错误，反馈等信息
+
+@enduml

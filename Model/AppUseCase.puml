@@ -48,6 +48,8 @@ note "如果更改了城市，添加或者更新最近14天一个新的到访城
 CaseN1 .. (case10)
 CaseN1 .. (case14)
 
+(case10) --> (case14) : <<Include>>
+
 Admin ---> (App) : Develop and Use
 User --> (App) : Use
 
