@@ -1,0 +1,49 @@
+    @startuml
+
+    ' 证件类型
+    enum CredentialsType {
+        IDCARD
+        PASSPORT
+    }
+
+    ' 个人信息
+    class userInfo{
+        userId : Integer
+        createdTime : Date
+        updateTime : Date
+        bindPhoneNumber : String
+        weixinBindOpenId : Integer
+        userBaseInfoId : Integer
+        credType : CredentialsType
+        credNumber : String
+        credVerify : bool
+    }
+
+    ' 这些信息不重要 userBaseInfoId聚合即可
+    class userBaseInfo{
+        realName : String
+        userSex : bool
+        birthDate : Date
+        NationInfo : String
+        houseHoldRegis : String
+        homeAddr : String
+        detailedLoc : String
+    }
+
+    userInfo o-- userBaseInfo : 用 userBaseInfoId 来聚合
+
+    class registerDto {
+        regisId : Integer
+        userId : Integer
+        createdTime : Date
+        updateTime : Date
+    }
+
+    class loginDto {
+        regisId : Integer
+        userId : Integer
+        createdTime : Date
+        updateTime : Date
+    }
+
+    @enduml
