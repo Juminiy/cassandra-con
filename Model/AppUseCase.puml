@@ -1,0 +1,66 @@
+@startuml
+' 字符手写特效
+skinparam handwritten true
+
+:User: << Human >>as User
+:System Admin: << Human >>as Admin
+
+(WeixinMicroApp) as (App) << Main >>
+
+
+User --> (case1) #line:red;line.bold;text:red : 打开小程序
+User --> (case2) #line:red;line.bold;text:red : 注册功能
+User --> (case3) #line:red;line.bold;text:red : 登录功能
+User --> (case4)  #green;line.dashed;text:green : 健康码
+User --> (case5)  #green;line.dashed;text:green : 个人信息
+User --> (case6)
+Admin -- (case6) : 后台或者Admin主动push出新的验证码
+User --> (case7) #blue;line.dotted;text:blue : 展示核酸检测结果
+User --> (case8) #blue;line.dotted;text:blue : 展示疫苗接种信息
+User --> (case9) #line:green;line.bold;text:green  : 展示14天通行位置
+User --> (case10) #line:green;line.bold;text:green  : 添加14天通行位置
+User --> (case11)
+User --> (case12) #blue;line.dotted;text:blue : 更新核酸检测结果
+User --> (case13) #blue;line.dotted;text:blue : 更新疫苗接种信息
+User --> (case14) #line:green;line.bold;text:green  : 更新14天通行位置
+
+' test case list
+(openMicroApp) as (case1)
+(registerConnectWeixin) as (case2)
+(loginByWeixin) as (case3)
+(showHealthCode) as (case4)
+(showUserInfo) as (case11)
+(updateUserInfo) as (case5)
+(updateHealthCode) as (case6)
+note "用户主动申请更新健康码，Admin或者后台要刷新给用户" as CaseN2
+CaseN2 .. (case6)
+
+(showNucleicAcidTests) as (case7)
+(updateNucleicAcidTests) as (case12)
+(showVaccineInjectionInfo) as (case8)
+(updateVaccineInjection) as (case13)
+
+
+(showRouteCard) as (case9)
+(addRouteInfo) as (case10)
+(updateRouteInfo) as (case14)
+note "如果更改了城市，添加或者更新最近14天一个新的到访城市" as CaseN1
+CaseN1 .. (case10)
+CaseN1 .. (case14)
+
+Admin ---> (App) : Develop and Use
+User --> (App) : Use
+
+note "System Admin is the MicroApp Developer or Manager." as AdminN1
+note "User is our casual users." as UserN1
+note "The WeixinMicroApp open from Weixin" as WXN1
+
+
+
+AdminN1 .. Admin
+UserN1 .. User
+
+WXN1 .. (App)
+
+
+@enduml
