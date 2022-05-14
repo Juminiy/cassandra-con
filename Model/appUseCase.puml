@@ -1,0 +1,15 @@
+@startuml
+
+:User: as User
+:System Admin: as Admin
+(WeixinApp) as (App)
+
+User -> (Start)
+User --> (App)
+
+Admin ---> (App)
+
+
+
+
+@enduml

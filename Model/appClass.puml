@@ -1,49 +1,108 @@
     @startuml
 
-    ' 证件类型
-    enum CredentialsType {
-        IDCARD
-        PASSPORT
-    }
-
+' 证件类型
+enum CredentialsType {
+    IDCARD
+    PASSPORT
+}
+UserInfo o-- CredentialsType : 证件枚举类型
     ' 个人信息
-    class userInfo{
-        userId : Integer
-        createdTime : Date
-        updateTime : Date
-        bindPhoneNumber : String
-        weixinBindOpenId : Integer
-        userBaseInfoId : Integer
-        credType : CredentialsType
-        credNumber : String
-        credVerify : bool
-    }
+class UserInfo{
+        - userId : Integer
+        + userOpenId : Integer
+        - createdTime : Date
+        - updateTime : Date
+        + bindPhoneNumber : String
+        + weixinBindOpenId : Integer
+        + userBaseInfoId : Integer
+        + credType : CredentialsType
+        + credNumber : String
+        + credVerify : Boolean
+}
 
-    ' 这些信息不重要 userBaseInfoId聚合即可
-    class userBaseInfo{
-        realName : String
-        userSex : bool
-        birthDate : Date
-        NationInfo : String
-        houseHoldRegis : String
-        homeAddr : String
-        detailedLoc : String
-    }
+' 这些信息 userBaseInfoId聚合即可
+class UserBaseInfo{
+        - baseInfoId : String
+        + realName : String
+        + userSex : Boolean
+        + birthDate : Date
+        + NationInfo : String
+        + houseHoldRegis : String
+        + homeAddr : String
+        + detailedLoc : String
+}
 
-    userInfo o-- userBaseInfo : 用 userBaseInfoId 来聚合
+UserInfo o-- UserBaseInfo : 用 userBaseInfoId 来聚合
 
-    class registerDto {
-        regisId : Integer
-        userId : Integer
-        createdTime : Date
-        updateTime : Date
-    }
+' 健康码生成
+class UserHealthCode {
+    - hcId : Integer
+    - createdTime : Date
+    - updateTime : Date
+    + codeGenTime : TimeStamp
+    + codeCdNumber : Integer
+    + userOpenId : Integer
+}
 
-    class loginDto {
-        regisId : Integer
-        userId : Integer
-        createdTime : Date
-        updateTime : Date
-    }
+UserHealthCode *-- UserInfo : userOpenId
 
-    @enduml
+class RegisterDto {
+        - regisId : Integer
+        + userOpenId : Integer
+        - createdTime : Date
+        - updateTime : Date
+}
+RegisterDto *-- UserInfo : userOpenId
+
+class LoginDto {
+        - loginId : Integer
+        + userOpenId : Integer
+        - createdTime : Date
+        - updateTime : Date
+}
+LoginDto *-- UserInfo : userOpenId
+
+' 行程卡
+class RouteInfo {
+    - routeId : Integer
+    - createdTime : Date
+    - updateTime : Date
+    + phoneNumber : String
+    ' 精确时间，年月日，时分秒
+    + routeUpdateTime : TimeStamp
+    ' 到访地点, 精确到 国，省，市，区，县
+    + routeLocation : String
+}
+
+UserInfo --- RouteInfo : UserInfo.bindPhoneNumber = RouteInfo.phoneNumber 联合查询
+
+
+class NucleicAcidInfo {
+    - naId : Integer
+    - createdTime : Date
+    - updateTime : Date
+    + userOpenId : Integer
+    + testTime : TimeStamp
+    + testLocation : String
+}
+
+NucleicAcidInfo *-- UserInfo : userOpenId
+
+
+class VaccinationInfo {
+    - vacId : Integer
+    - createdTime : Date
+    - updateTime : Date
+    + userOpenId : Integer
+    + vaccineName : String
+    + vaccineLot : String
+    + vaccineManufacturer : String
+    + injectionCode : String
+    + injectionTime : Date
+    + injectionClinicName : String
+    + injectionClinicTel : String
+}
+
+VaccinationInfo *-- UserInfo : userOpenId
+
+@enduml
